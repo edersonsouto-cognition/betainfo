@@ -124,9 +124,9 @@ def stats() -> None:
     table.add_row("Completion rate", f"{s.completion_rate:.1%}")
     table.add_row("Overdue", str(s.overdue))
     for st, count in s.by_status.items():
-        table.add_row(f"  {st}", str(count))
+        table.add_row(f"  status: {st}", str(count))
     for pr, count in s.by_priority.items():
-        table.add_row(f"  [{pr}]", str(count))
+        table.add_row(f"  priority: {pr}", str(count))
     console.print(table)
 
 
