@@ -1,3 +1,8 @@
+---
+name: setup
+description: Setting up the Task Manager API development environment (Python 3.11+, uv, dependencies). Use when a session needs a working dev environment.
+---
+
 # Skill: Setting Up the Development Environment
 
 Use this skill when setting up the Task Manager API project for the first time, or when a new Devin session needs a working dev environment.

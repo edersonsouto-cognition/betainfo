@@ -1,3 +1,8 @@
+---
+name: codebase-guide
+description: Codebase architecture, directory layout, intentional bugs in TaskService, refactoring opportunities, and demo scenario prompts. Use when navigating the code or understanding the project design.
+---
+
 # Skill: Codebase Architecture and Demo Scenarios
 
 Use this skill to understand the project structure, key design decisions, and the intentional bugs/refactoring opportunities built into this demo playground.

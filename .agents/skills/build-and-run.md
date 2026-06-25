@@ -1,3 +1,8 @@
+---
+name: build-and-run
+description: Running the FastAPI server and Typer CLI, endpoint reference, smoke tests, and architecture notes. Use when you need to start the app or understand how to interact with it.
+---
+
 # Skill: Building and Running the Project
 
 Use this skill to run the Task Manager API server or CLI after setup is complete.

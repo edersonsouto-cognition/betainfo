@@ -1,3 +1,8 @@
+---
+name: testing-and-linting
+description: Running pytest, ruff lint/format, CI pipeline details, and a map of intentionally missing tests. Use when running tests, checking code quality, or debugging CI.
+---
+
 # Skill: Running Tests and Linting
 
 Use this skill when running the test suite, checking code quality, or working with CI.
