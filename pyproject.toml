@@ -1,0 +1,49 @@
+[project]
+name = "task-manager-api"
+version = "0.1.0"
+description = "A Task Manager API playground for Devin demo recordings (FastAPI + Typer CLI)."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.111.0",
+    "uvicorn[standard]>=0.30.0",
+    "pydantic>=2.7.0",
+    "typer>=0.12.0",
+    "rich>=13.7.0",
+    "pandas>=2.2.0",
+    "httpx>=0.27.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2.0",
+    "ruff>=0.5.0",
+]
+
+[project.scripts]
+taskman = "src.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "C4"]
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+# FastAPI uses Query/Depends in function defaults by design.
+"src/api/main.py" = ["B008"]
+# The text_processing module intentionally contains refactor-worthy code for demos.
+"src/utils/text_processing.py" = ["C401", "C416", "B007"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"

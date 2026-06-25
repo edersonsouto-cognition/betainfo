@@ -1,0 +1,25 @@
+date,product,category,quantity,unit_price,region,salesperson
+2024-01-05,Laptop Pro,Electronics,3,1299.99,North,Alice
+2024-01-12,Wireless Mouse,Electronics,25,29.99,South,Bob
+2024-01-18,Standing Desk,Furniture,2,549.00,East,Carol
+2024-02-03,Laptop Pro,Electronics,5,1299.99,West,Dave
+2024-02-14,Ergonomic Chair,Furniture,8,399.99,North,Alice
+2024-02-22,USB-C Hub,Electronics,40,49.99,South,Bob
+2024-03-01,Monitor 4K,Electronics,6,699.99,East,Carol
+2024-03-10,Desk Lamp,Furniture,15,79.99,West,Dave
+2024-03-25,Mechanical Keyboard,Electronics,12,149.99,North,Alice
+2024-04-05,Laptop Pro,Electronics,4,1299.99,South,Bob
+2024-04-12,Standing Desk,Furniture,3,549.00,East,Carol
+2024-04-20,Wireless Mouse,Electronics,30,29.99,West,Dave
+2024-05-02,Ergonomic Chair,Furniture,5,399.99,North,Alice
+2024-05-15,Monitor 4K,Electronics,8,699.99,South,Bob
+2024-05-28,USB-C Hub,Electronics,35,49.99,East,Carol
+2024-06-06,Desk Lamp,Furniture,20,79.99,West,Dave
+2024-06-14,Mechanical Keyboard,Electronics,10,149.99,North,Alice
+2024-06-22,Laptop Pro,Electronics,2,1299.99,South,Bob
+2024-07-03,Standing Desk,Furniture,4,549.00,East,Carol
+2024-07-18,Ergonomic Chair,Furniture,6,399.99,West,Dave
+2024-08-01,Monitor 4K,Electronics,7,699.99,North,Alice
+2024-08-15,Wireless Mouse,Electronics,45,29.99,South,Bob
+2024-09-10,USB-C Hub,Electronics,20,49.99,East,Carol
+2024-09-25,Mechanical Keyboard,Electronics,18,149.99,West,Dave

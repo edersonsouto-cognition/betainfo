@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "title": "Set up project CI/CD pipeline",
+    "description": "Configure GitHub Actions with lint + test steps.",
+    "priority": "high",
+    "status": "done",
+    "due_date": "2024-06-01T12:00:00Z",
+    "created_at": "2024-05-20T08:00:00Z",
+    "updated_at": "2024-05-30T10:45:00Z"
+  },
+  {
+    "id": 2,
+    "title": "Write API documentation",
+    "description": "Document all REST endpoints with examples.",
+    "priority": "medium",
+    "status": "in_progress",
+    "due_date": "2024-06-15T12:00:00Z",
+    "created_at": "2024-05-25T09:00:00Z",
+    "updated_at": "2024-06-02T14:30:00Z"
+  },
+  {
+    "id": 3,
+    "title": "Fix search case sensitivity bug",
+    "description": "Search should match regardless of case.",
+    "priority": "high",
+    "status": "todo",
+    "due_date": "2024-06-10T12:00:00Z",
+    "created_at": "2024-06-01T11:00:00Z",
+    "updated_at": "2024-06-01T11:00:00Z"
+  },
+  {
+    "id": 4,
+    "title": "Add unit tests for edge cases",
+    "description": "Cover overdue-task detection, empty stats, and search.",
+    "priority": "medium",
+    "status": "todo",
+    "due_date": "2024-06-20T12:00:00Z",
+    "created_at": "2024-06-03T08:30:00Z",
+    "updated_at": "2024-06-03T08:30:00Z"
+  },
+  {
+    "id": 5,
+    "title": "Refactor text processing module",
+    "description": "Compile regex, use Counter, flatten nested helpers.",
+    "priority": "low",
+    "status": "todo",
+    "due_date": "2024-07-01T12:00:00Z",
+    "created_at": "2024-06-05T10:00:00Z",
+    "updated_at": "2024-06-05T10:00:00Z"
+  },
+  {
+    "id": 6,
+    "title": "Quarterly sales report",
+    "description": "Generate summary from sales_data.csv using pandas.",
+    "priority": "medium",
+    "status": "todo",
+    "due_date": "2024-06-30T12:00:00Z",
+    "created_at": "2024-06-10T09:00:00Z",
+    "updated_at": "2024-06-10T09:00:00Z"
+  }
+]
