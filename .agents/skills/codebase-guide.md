@@ -70,7 +70,7 @@ The core business logic layer. Operates as an in-memory dict-based store (`self.
 Uses an app factory pattern (`create_app()`). The shared `TaskService` instance is injected via `Depends(get_service)`. All routes are defined inside the factory function.
 
 ### CLI (`src/cli.py`)
-Hydrates a `TaskService` from `data/cli_tasks.json` on first access. After mutations (`add`, `done`), persists the state back to that file.
+Hydrates a `TaskService` from `data/cli_tasks.json` on first access. When that file does not exist yet (first run), it seeds from `data/sample_tasks.json` instead. After mutations (`add`, `done`), persists the state back to `data/cli_tasks.json`.
 
 ## Intentional Bugs (4 total in `task_service.py`)
 

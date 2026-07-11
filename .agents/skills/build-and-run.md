@@ -72,12 +72,13 @@ uv run python -m src.cli stats
 ```
 
 - CLI tasks are persisted in `data/cli_tasks.json` (gitignored).
+- On first run, when `data/cli_tasks.json` does not exist yet, the CLI seeds its store from `data/sample_tasks.json` so demos start with sample data. Subsequent mutations persist to `data/cli_tasks.json`.
 - The CLI uses the same `TaskService` as the API but with file-based persistence.
 
 ## Architecture Notes
 
 - **`src/api/main.py`**: FastAPI app factory (`create_app()`) with route definitions. Uses a shared in-memory `TaskService` instance via FastAPI dependency injection.
-- **`src/cli.py`**: Typer CLI that hydrates a `TaskService` from `data/cli_tasks.json` on startup and persists after mutations.
+- **`src/cli.py`**: Typer CLI that hydrates a `TaskService` from `data/cli_tasks.json` on startup (falling back to `data/sample_tasks.json` as seed data on first run) and persists after mutations.
 - **`src/services/task_service.py`**: Core business logic (in-memory CRUD store). Contains intentional bugs for demo purposes (see the testing skill).
 - **`src/models/task.py`**: Pydantic v2 models (`Task`, `TaskCreate`, `TaskUpdate`, `TaskStats`, enums `TaskStatus`, `TaskPriority`).
 - Both the API and CLI share the same models and service layer.
