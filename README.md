@@ -39,7 +39,7 @@ uv run ruff format --check .
 ├── tests/                # Pytest suite (with intentional gaps)
 ├── data/
 │   ├── sales_data.csv    # 24 sales records for data analysis demos
-│   └── sample_tasks.json # Pre-populated task data
+│   └── sample_tasks.json # Seed data the CLI loads on first run
 ├── .github/workflows/
 │   └── ci.yml            # GitHub Actions: Ruff + Pytest
 └── pyproject.toml

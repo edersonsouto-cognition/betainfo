@@ -18,17 +18,24 @@ app = typer.Typer(name="taskman", help="A simple task manager CLI.")
 console = Console()
 
 DATA_FILE = Path("data/cli_tasks.json")
+SEED_FILE = Path("data/sample_tasks.json")
 _service: TaskService | None = None
 
 
 def _get_service() -> TaskService:
-    """Lazy-load the shared TaskService, hydrating from disk."""
+    """Lazy-load the shared TaskService, hydrating from disk.
+
+    Runtime state lives in ``DATA_FILE`` (gitignored). On first run, when it
+    does not exist yet, seed the store from ``SEED_FILE`` so the demo starts
+    with sample data; subsequent writes persist to ``DATA_FILE``.
+    """
     global _service  # noqa: PLW0603
     if _service is not None:
         return _service
     _service = TaskService()
-    if DATA_FILE.exists():
-        raw = json.loads(DATA_FILE.read_text())
+    source = DATA_FILE if DATA_FILE.exists() else SEED_FILE
+    if source.exists():
+        raw = json.loads(source.read_text())
         for item in raw:
             task = Task.model_validate(item)
             _service._tasks[task.id] = task
