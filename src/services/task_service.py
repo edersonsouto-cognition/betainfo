@@ -1,14 +1,12 @@
 """In-memory task service.
 
-NOTE FOR DEMOS: this module intentionally contains four bugs that are used in
-Devin demo recordings. Each one is flagged with a ``# BUG:`` comment describing
-the intended (correct) behaviour. The accompanying test suite intentionally
-omits the tests that would catch them.
+This module previously contained four intentional demo bugs. They have been
+fixed and are now covered by the test suite:
 
-    1. search_tasks()      -> should be case-insensitive
-    2. update_task()       -> should refresh updated_at
-    3. get_overdue_tasks() -> date comparison is reversed
-    4. get_stats()         -> divides by zero when there are no tasks
+    1. search_tasks()      -> case-insensitive matching
+    2. update_task()       -> refreshes updated_at
+    3. get_overdue_tasks() -> due_date < now comparison
+    4. get_stats()         -> completion_rate is 0.0 for an empty task list
 """
 
 from __future__ import annotations
@@ -84,9 +82,8 @@ class TaskService:
         """Apply a partial update to an existing task."""
         task = self.get_task(task_id)
         data = payload.model_dump(exclude_unset=True)
+        data["updated_at"] = _utcnow()
         updated = task.model_copy(update=data)
-        # BUG: updated_at should be refreshed to the current time whenever a
-        # task changes, but it is left untouched here.
         self._tasks[task_id] = updated
         return updated
 
@@ -106,10 +103,9 @@ class TaskService:
     def search_tasks(self, query: str) -> list[Task]:
         """Search tasks whose title or description contains ``query``."""
         results = []
+        needle = query.lower()
         for task in self._tasks.values():
-            # BUG: this comparison is case-sensitive. Searching for "report"
-            # should match a task titled "Quarterly Report", but it does not.
-            if query in task.title or query in task.description:
+            if needle in task.title.lower() or needle in task.description.lower():
                 results.append(task)
         return sorted(results, key=lambda task: task.id)
 
@@ -120,9 +116,7 @@ class TaskService:
         for task in self._tasks.values():
             if task.due_date is None or task.status == TaskStatus.DONE:
                 continue
-            # BUG: the comparison is reversed. A task is overdue when its
-            # due_date is in the past (due_date < now), not the future.
-            if task.due_date > now:
+            if task.due_date < now:
                 overdue.append(task)
         return sorted(overdue, key=lambda task: task.id)
 
@@ -138,9 +132,7 @@ class TaskService:
             by_priority[task.priority.value] = by_priority.get(task.priority.value, 0) + 1
 
         done = by_status[TaskStatus.DONE.value]
-        # BUG: dividing by ``total`` raises ZeroDivisionError when there are no
-        # tasks. The completion rate should be 0.0 for an empty task list.
-        completion_rate = done / total
+        completion_rate = done / total if total else 0.0
 
         return TaskStats(
             total=total,
