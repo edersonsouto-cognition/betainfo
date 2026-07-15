@@ -5,7 +5,7 @@ description = "A Task Manager API playground for Devin demo recordings (FastAPI 
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "fastapi>=0.111.0",
+    "fastapi>=0.139.0",
     "uvicorn[standard]>=0.30.0",
     "pydantic>=2.7.0",
     "typer>=0.12.0",
