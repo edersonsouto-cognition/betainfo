@@ -1,19 +1,13 @@
-"""Tests for TaskService.
-
-NOTE FOR DEMOS: this test suite intentionally omits the following test classes
-so that they can be written during a Devin demo recording:
-
-  - TestUpdateTask (would catch the updated_at bug)
-  - TestSearchTasks (would catch the case-sensitivity bug)
-  - TestGetOverdueTasks (would catch the reversed date comparison bug)
-  - TestGetStats (would catch the division-by-zero bug)
-"""
+"""Tests for TaskService."""
 
 from __future__ import annotations
 
+import time
+from datetime import UTC, datetime, timedelta
+
 import pytest
 
-from src.models.task import TaskCreate, TaskPriority, TaskStatus
+from src.models.task import TaskCreate, TaskPriority, TaskStatus, TaskUpdate
 from src.services.task_service import TaskNotFoundError, TaskService
 
 
@@ -84,11 +78,80 @@ class TestCompleteTask:
         assert task.status == TaskStatus.DONE
 
 
-# ---------------------------------------------------------------------------
-# The following test classes are INTENTIONALLY ABSENT. Writing them is a key
-# part of the demo workflow.
-# ---------------------------------------------------------------------------
-# class TestUpdateTask: ...
-# class TestSearchTasks: ...
-# class TestGetOverdueTasks: ...
-# class TestGetStats: ...
+class TestUpdateTask:
+    """Tests for TaskService.update_task()."""
+
+    def test_update_refreshes_updated_at(self, service: TaskService) -> None:
+        task = service.create_task(TaskCreate(title="Original title"))
+        original_updated_at = task.updated_at
+        time.sleep(0.01)
+        updated = service.update_task(task.id, TaskUpdate(title="New title"))
+        assert updated.title == "New title"
+        assert updated.updated_at > original_updated_at
+
+    def test_update_persists_change(self, service: TaskService) -> None:
+        task = service.create_task(TaskCreate(title="Original title"))
+        service.update_task(task.id, TaskUpdate(priority=TaskPriority.HIGH))
+        assert service.get_task(task.id).priority == TaskPriority.HIGH
+
+    def test_update_missing_raises(self, service: TaskService) -> None:
+        with pytest.raises(TaskNotFoundError):
+            service.update_task(42, TaskUpdate(title="Nope"))
+
+
+class TestSearchTasks:
+    """Tests for TaskService.search_tasks()."""
+
+    def test_search_title_is_case_insensitive(self, service: TaskService) -> None:
+        task = service.create_task(TaskCreate(title="Quarterly Report"))
+        results = service.search_tasks("report")
+        assert [found.id for found in results] == [task.id]
+
+    def test_search_description_is_case_insensitive(self, service: TaskService) -> None:
+        task = service.create_task(
+            TaskCreate(title="Untitled", description="Ship the V0.1 RELEASE")
+        )
+        results = service.search_tasks("release")
+        assert [found.id for found in results] == [task.id]
+
+    def test_search_no_match(self, service: TaskService) -> None:
+        service.create_task(TaskCreate(title="Quarterly Report"))
+        assert service.search_tasks("invoice") == []
+
+
+class TestGetOverdueTasks:
+    """Tests for TaskService.get_overdue_tasks()."""
+
+    def test_past_due_task_is_overdue(self, service: TaskService) -> None:
+        now = datetime.now(UTC)
+        task = service.create_task(TaskCreate(title="Late task", due_date=now - timedelta(days=1)))
+        assert [found.id for found in service.get_overdue_tasks()] == [task.id]
+
+    def test_future_due_task_is_not_overdue(self, service: TaskService) -> None:
+        now = datetime.now(UTC)
+        service.create_task(TaskCreate(title="Future task", due_date=now + timedelta(days=1)))
+        assert service.get_overdue_tasks() == []
+
+    def test_done_task_is_not_overdue(self, service: TaskService) -> None:
+        now = datetime.now(UTC)
+        task = service.create_task(
+            TaskCreate(title="Late but done", due_date=now - timedelta(days=1))
+        )
+        service.complete_task(task.id)
+        assert service.get_overdue_tasks() == []
+
+
+class TestGetStats:
+    """Tests for TaskService.get_stats()."""
+
+    def test_empty_service_has_zero_completion_rate(self, service: TaskService) -> None:
+        stats = service.get_stats()
+        assert stats.total == 0
+        assert stats.completion_rate == 0.0
+
+    def test_populated_completion_rate(self, populated_service: TaskService) -> None:
+        populated_service.complete_task(1)
+        stats = populated_service.get_stats()
+        assert stats.total == 3
+        assert stats.by_status[TaskStatus.DONE.value] == 1
+        assert stats.completion_rate == pytest.approx(1 / 3, abs=1e-4)
