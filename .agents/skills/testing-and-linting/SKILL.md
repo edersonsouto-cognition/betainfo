@@ -15,7 +15,7 @@ uv run pytest
 
 - Runs all tests in `tests/` (configured via `[tool.pytest.ini_options]` in `pyproject.toml`).
 - The `-v` flag is applied automatically (set in `addopts`).
-- 35 tests across 4 test files should pass on a clean checkout.
+- 47 tests across 5 test files should pass on a clean checkout.
 
 ### Test Files
 
@@ -25,6 +25,7 @@ uv run pytest
 | `tests/test_api.py`           | FastAPI endpoint integration tests       |
 | `tests/test_text_processing.py` | Text utility functions                |
 | `tests/test_data_processor.py`  | CSV/JSON data utilities (uses `data/sales_data.csv`) |
+| `tests/test_cli.py`           | Typer CLI commands and JSON persistence  |
 
 ### Shared Fixtures (`tests/conftest.py`)
 
