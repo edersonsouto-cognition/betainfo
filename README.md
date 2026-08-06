@@ -40,6 +40,7 @@ uv run ruff format --check .
 ├── data/
 │   ├── sales_data.csv    # 24 sales records for data analysis demos
 │   └── sample_tasks.json # Seed data the CLI loads on first run
+├── .agents/skills/       # Devin skills: setup, build-and-run, testing, workflows
 ├── .github/workflows/
 │   └── ci.yml            # GitHub Actions: Ruff + Pytest
 └── pyproject.toml
