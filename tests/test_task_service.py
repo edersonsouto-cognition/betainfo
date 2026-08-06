@@ -94,6 +94,12 @@ class TestUpdateTask:
         service.update_task(task.id, TaskUpdate(priority=TaskPriority.HIGH))
         assert service.get_task(task.id).priority == TaskPriority.HIGH
 
+    def test_partial_update_keeps_other_fields(self, populated_service: TaskService) -> None:
+        updated = populated_service.update_task(1, TaskUpdate(title="Renamed"))
+        assert updated.title == "Renamed"
+        assert updated.priority == TaskPriority.HIGH
+        assert updated.created_at == populated_service.get_task(1).created_at
+
     def test_update_missing_raises(self, service: TaskService) -> None:
         with pytest.raises(TaskNotFoundError):
             service.update_task(42, TaskUpdate(title="Nope"))
@@ -118,6 +124,16 @@ class TestSearchTasks:
         service.create_task(TaskCreate(title="Quarterly Report"))
         assert service.search_tasks("invoice") == []
 
+    def test_results_sorted_by_id(self, service: TaskService) -> None:
+        for index in range(5):
+            service.create_task(TaskCreate(title=f"Report {index}"))
+        results = service.search_tasks("REPORT")
+        assert [found.id for found in results] == [1, 2, 3, 4, 5]
+
+    def test_empty_query_matches_all(self, populated_service: TaskService) -> None:
+        results = populated_service.search_tasks("")
+        assert [found.id for found in results] == [1, 2, 3]
+
 
 class TestGetOverdueTasks:
     """Tests for TaskService.get_overdue_tasks()."""
@@ -140,6 +156,10 @@ class TestGetOverdueTasks:
         service.complete_task(task.id)
         assert service.get_overdue_tasks() == []
 
+    def test_task_without_due_date_is_not_overdue(self, service: TaskService) -> None:
+        service.create_task(TaskCreate(title="No due date"))
+        assert service.get_overdue_tasks() == []
+
 
 class TestGetStats:
     """Tests for TaskService.get_stats()."""
@@ -155,3 +175,10 @@ class TestGetStats:
         assert stats.total == 3
         assert stats.by_status[TaskStatus.DONE.value] == 1
         assert stats.completion_rate == pytest.approx(1 / 3, abs=1e-4)
+
+    def test_status_and_priority_breakdown(self, populated_service: TaskService) -> None:
+        populated_service.complete_task(1)
+        stats = populated_service.get_stats()
+        assert stats.by_status == {"todo": 2, "in_progress": 0, "done": 1}
+        assert stats.by_priority == {"high": 2, "low": 1}
+        assert stats.overdue == 0
