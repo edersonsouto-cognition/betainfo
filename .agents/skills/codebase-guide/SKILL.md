@@ -1,15 +1,15 @@
 ---
 name: codebase-guide
-description: Codebase architecture, directory layout, intentional bugs in TaskService, refactoring opportunities, and demo scenario prompts. Use when navigating the code or understanding the project design.
+description: Codebase architecture, directory layout, historical bugs that were fixed, refactoring opportunities, and demo scenario prompts. Use when navigating the code or understanding the project design.
 ---
 
 # Skill: Codebase Architecture and Demo Scenarios
 
-Use this skill to understand the project structure, key design decisions, and the intentional bugs/refactoring opportunities built into this demo playground.
+Use this skill to understand the project structure, key design decisions, and the refactoring opportunities built into this demo playground.
 
 ## Project Purpose
 
-This is a **Task Manager API playground** designed for Devin demo recordings. It contains intentional bugs, missing test coverage, and refactor-worthy code so that Devin can showcase debugging, testing, refactoring, and feature development capabilities.
+This is a **Task Manager API playground** designed for Devin demo recordings. It contains refactor-worthy code and sample data so that Devin can showcase testing, refactoring, feature development, and data analysis. The original `task_service.py` bugs have been fixed and are now covered by tests.
 
 ## Directory Layout
 
@@ -21,18 +21,18 @@ betainfo/
 │   ├── models/
 │   │   └── task.py              # Pydantic v2 schemas and enums
 │   ├── services/
-│   │   └── task_service.py      # In-memory CRUD service (has intentional bugs)
+│   │   └── task_service.py      # In-memory CRUD service
 │   ├── utils/
 │   │   ├── text_processing.py   # Text helpers (intentionally refactor-worthy)
 │   │   └── data_processor.py    # pandas CSV/JSON utilities
 │   └── cli.py                   # Typer + Rich CLI
 ├── tests/
 │   ├── conftest.py              # Shared fixtures (service, populated_service)
-│   ├── test_api.py              # FastAPI endpoint tests
+│   ├── test_api.py              # FastAPI endpoint integration tests
 │   ├── test_cli.py              # Typer CLI commands and persistence
 │   ├── test_data_processor.py   # Data processor tests
 │   ├── test_models.py           # Pydantic model validation and serialization
-│   ├── test_task_service.py     # Service tests (intentionally incomplete)
+│   ├── test_task_service.py     # TaskService CRUD operations and queries
 │   └── test_text_processing.py  # Text utility tests
 ├── data/
 │   ├── sales_data.csv           # 24 sales records (Electronics, Furniture across 4 regions)
@@ -74,17 +74,14 @@ Uses an app factory pattern (`create_app()`). The shared `TaskService` instance 
 ### CLI (`src/cli.py`)
 Hydrates a `TaskService` from `data/cli_tasks.json` on first access. When that file does not exist yet (first run), it seeds from `data/sample_tasks.json` instead. After mutations (`add`, `done`), persists the state back to `data/cli_tasks.json`.
 
-## Intentional Bugs (4 total in `task_service.py`)
+## Historical Bugs (fixed)
 
-Each bug is marked with a `# BUG:` comment in the source code:
+The original `task_service.py` contained four bugs that were fixed in a previous demo. The fixes and their tests now live in `tests/test_task_service.py`:
 
-1. **Case-sensitive search** (`search_tasks`): Uses `query in task.title` instead of lowercased comparison. Searching `"report"` won't match `"Quarterly Report"`.
-
-2. **Missing `updated_at` refresh** (`update_task`): After applying updates via `model_copy(update=data)`, the `updated_at` field is not set to the current time.
-
-3. **Reversed overdue comparison** (`get_overdue_tasks`): Uses `task.due_date > now` (selects future tasks) instead of `task.due_date < now` (past-due tasks).
-
-4. **Division by zero** (`get_stats`): Computes `done / total` without guarding against `total == 0`, crashing on an empty task list.
+- Case-insensitive `search_tasks()`
+- `updated_at` refresh in `update_task()`
+- Correct date comparison in `get_overdue_tasks()`
+- Zero-division guard in `get_stats()`
 
 ## Refactoring Opportunity (`src/utils/text_processing.py`)
 
@@ -97,8 +94,6 @@ The module works correctly but has intentionally poor code quality:
 
 | Scenario              | Prompt suggestion                                          |
 |-----------------------|------------------------------------------------------------|
-| Bug fixing            | "Find and fix the bugs in task_service.py"                 |
-| Writing tests         | "Increase test coverage for TaskService"                   |
 | Code refactoring      | "Refactor text_processing.py for performance/readability"  |
 | Feature development   | "Add a tagging system to tasks"                            |
 | Data analysis         | "Analyze sales_data.csv and generate a quarterly report"   |

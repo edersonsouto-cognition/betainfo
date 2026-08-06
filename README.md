@@ -1,6 +1,6 @@
 # Task Manager API – Devin Demo Playground
 
-A feature-rich Task Manager project designed for **Devin demo recordings**. It includes intentional bugs, missing test coverage, refactor-worthy code, and sample data — all set up to showcase different Devin capabilities.
+A feature-rich Task Manager project designed for **Devin demo recordings**. It includes refactor-worthy code and sample data — all set up to showcase different Devin capabilities. The original `task_service.py` bugs have been fixed and are now covered by tests.
 
 ## Quick Start
 
@@ -30,13 +30,13 @@ uv run ruff format --check .
 │   │   └── main.py
 │   ├── models/           # Pydantic v2 models
 │   │   └── task.py
-│   ├── services/         # Business logic (with intentional bugs)
+│   ├── services/         # Business logic
 │   │   └── task_service.py
 │   ├── utils/
 │   │   ├── text_processing.py   # Refactor-worthy text helpers
 │   │   └── data_processor.py    # CSV/JSON wrangling with pandas
 │   └── cli.py            # Typer + Rich CLI
-├── tests/                # Pytest suite (with intentional gaps)
+├── tests/                # Pytest suite
 ├── data/
 │   ├── sales_data.csv    # 24 sales records for data analysis demos
 │   └── sample_tasks.json # Seed data the CLI loads on first run
@@ -60,28 +60,7 @@ uv run ruff format --check .
 
 ## Demo Scenarios
 
-### 1. Bug Fixing (4 intentional bugs in `src/services/task_service.py`)
-
-| Bug | Method | Symptom |
-|-----|--------|---------|
-| Case-sensitive search | `search_tasks()` | Searching `"report"` doesn't match `"Quarterly Report"` |
-| Missing `updated_at` | `update_task()` | Timestamp never changes after update |
-| Reversed comparison | `get_overdue_tasks()` | Returns future tasks instead of past-due ones |
-| Division by zero | `get_stats()` | Crashes on `ZeroDivisionError` when no tasks exist |
-
-**How to demo:** Ask Devin to "find and fix the bugs in task_service.py" or "write missing tests and fix the failures."
-
-### 2. Writing Missing Tests
-
-The test suite in `tests/test_task_service.py` intentionally omits:
-- `TestUpdateTask` — would catch the `updated_at` bug
-- `TestSearchTasks` — would catch the case-sensitivity bug
-- `TestGetOverdueTasks` — would catch the date comparison bug
-- `TestGetStats` — would catch the division-by-zero bug
-
-**How to demo:** Ask Devin to "increase test coverage for TaskService."
-
-### 3. Code Refactoring (`src/utils/text_processing.py`)
+### 1. Code Refactoring (`src/utils/text_processing.py`)
 
 The text processing module works correctly but has poor code quality:
 - Regular expressions compiled on every call (should use `re.compile`)
@@ -90,7 +69,7 @@ The text processing module works correctly but has poor code quality:
 
 **How to demo:** Ask Devin to "refactor text_processing.py for performance and readability."
 
-### 4. Feature Development
+### 2. Feature Development
 
 Ideas for new feature demos:
 - Add task tagging (many-to-many relationship)
@@ -101,7 +80,7 @@ Ideas for new feature demos:
 
 **How to demo:** Ask Devin to "add a tagging system to tasks" or any feature from the list above.
 
-### 5. Data Analysis (`data/sales_data.csv`)
+### 3. Data Analysis (`data/sales_data.csv`)
 
 The sales data has 24 records across Electronics and Furniture categories, 4 regions, and 4 salespeople. The `data_processor.py` module provides helpers for:
 - Loading and filtering CSV/JSON data
@@ -110,7 +89,7 @@ The sales data has 24 records across Electronics and Furniture categories, 4 reg
 
 **How to demo:** Ask Devin to "analyze sales_data.csv and generate a quarterly report."
 
-### 6. DevOps & CI
+### 4. DevOps & CI
 
 The GitHub Actions workflow (`.github/workflows/ci.yml`) runs:
 1. **Lint** — `ruff check .` and `ruff format --check .`

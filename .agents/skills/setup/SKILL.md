@@ -30,7 +30,7 @@ Use this skill when setting up the Task Manager API project for the first time, 
    ```bash
    uv run pytest
    ```
-   All 65 tests should pass.
+   All 76 tests should pass.
 
 4. **Verify linting** passes:
    ```bash
