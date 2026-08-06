@@ -31,7 +31,8 @@ betainfo/
 │   ├── test_task_service.py     # Service tests (intentionally incomplete)
 │   ├── test_api.py              # FastAPI endpoint tests
 │   ├── test_text_processing.py  # Text utility tests
-│   └── test_data_processor.py   # Data processor tests
+│   ├── test_data_processor.py   # Data processor tests
+│   └── test_cli.py              # Typer CLI tests
 ├── data/
 │   ├── sales_data.csv           # 24 sales records (Electronics, Furniture across 4 regions)
 │   └── sample_tasks.json        # 6 pre-populated tasks for demos
