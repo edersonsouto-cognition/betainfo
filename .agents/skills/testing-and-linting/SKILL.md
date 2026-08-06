@@ -81,6 +81,7 @@ GitHub Actions runs on push to `main` and on pull requests targeting `main`:
 2. **`test` job** (depends on lint): `uv sync --all-extras` then `pytest`
 
 Both jobs use `astral-sh/setup-uv@v3` to install `uv` and run on `ubuntu-latest`.
+The uv version is pinned to `0.11.28` in `ci.yml` so the action downloads that exact release directly instead of calling the GitHub API to resolve "latest" on every run (which can flake due to rate limits or transient API errors).
 
 Always run both lint and tests locally before pushing:
 ```bash
