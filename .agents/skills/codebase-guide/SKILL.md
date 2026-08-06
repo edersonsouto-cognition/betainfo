@@ -1,15 +1,15 @@
 ---
 name: codebase-guide
-description: Codebase architecture, directory layout, intentional bugs in TaskService, refactoring opportunities, and demo scenario prompts. Use when navigating the code or understanding the project design.
+description: Codebase architecture, directory layout, refactoring opportunities, and demo scenario prompts. Use when navigating the code or understanding the project design.
 ---
 
 # Skill: Codebase Architecture and Demo Scenarios
 
-Use this skill to understand the project structure, key design decisions, and the intentional bugs/refactoring opportunities built into this demo playground.
+Use this skill to understand the project structure, key design decisions, and the refactoring opportunities built into this demo playground.
 
 ## Project Purpose
 
-This is a **Task Manager API playground** designed for Devin demo recordings. It contains intentional bugs, missing test coverage, and refactor-worthy code so that Devin can showcase debugging, testing, refactoring, and feature development capabilities.
+This is a **Task Manager API playground** designed for Devin demo recordings. It contains refactor-worthy code and sample data so that Devin can showcase testing, refactoring, and feature development capabilities.
 
 ## Directory Layout
 
@@ -21,14 +21,14 @@ betainfo/
 │   ├── models/
 │   │   └── task.py              # Pydantic v2 schemas and enums
 │   ├── services/
-│   │   └── task_service.py      # In-memory CRUD service (has intentional bugs)
+│   │   └── task_service.py      # In-memory CRUD service
 │   ├── utils/
 │   │   ├── text_processing.py   # Text helpers (intentionally refactor-worthy)
 │   │   └── data_processor.py    # pandas CSV/JSON utilities
 │   └── cli.py                   # Typer + Rich CLI
 ├── tests/
 │   ├── conftest.py              # Shared fixtures (service, populated_service)
-│   ├── test_task_service.py     # Service tests (intentionally incomplete)
+│   ├── test_task_service.py     # Service tests (CRUD and query methods)
 │   ├── test_api.py              # FastAPI endpoint tests
 │   ├── test_text_processing.py  # Text utility tests
 │   ├── test_data_processor.py   # Data processor tests
@@ -73,17 +73,16 @@ Uses an app factory pattern (`create_app()`). The shared `TaskService` instance 
 ### CLI (`src/cli.py`)
 Hydrates a `TaskService` from `data/cli_tasks.json` on first access. When that file does not exist yet (first run), it seeds from `data/sample_tasks.json` instead. After mutations (`add`, `done`), persists the state back to `data/cli_tasks.json`.
 
-## Intentional Bugs (4 total in `task_service.py`)
+## Historical TaskService Bugs (Fixed)
 
-Each bug is marked with a `# BUG:` comment in the source code:
+`src/services/task_service.py` previously contained four intentional demo bugs. They have since been fixed and are covered by `tests/test_task_service.py`:
 
-1. **Case-sensitive search** (`search_tasks`): Uses `query in task.title` instead of lowercased comparison. Searching `"report"` won't match `"Quarterly Report"`.
+1. **Case-sensitive search** (`search_tasks`) — now case-insensitive.
+2. **Missing `updated_at` refresh** (`update_task`) — now refreshes `updated_at` on every change.
+3. **Reversed overdue comparison** (`get_overdue_tasks`) — now correctly identifies past-due tasks.
+4. **Division by zero** (`get_stats`) — now returns `0.0` for an empty task list.
 
-2. **Missing `updated_at` refresh** (`update_task`): After applying updates via `model_copy(update=data)`, the `updated_at` field is not set to the current time.
-
-3. **Reversed overdue comparison** (`get_overdue_tasks`): Uses `task.due_date > now` (selects future tasks) instead of `task.due_date < now` (past-due tasks).
-
-4. **Division by zero** (`get_stats`): Computes `done / total` without guarding against `total == 0`, crashing on an empty task list.
+The remaining refactor-worthy area is `src/utils/text_processing.py`.
 
 ## Refactoring Opportunity (`src/utils/text_processing.py`)
 
@@ -96,8 +95,8 @@ The module works correctly but has intentionally poor code quality:
 
 | Scenario              | Prompt suggestion                                          |
 |-----------------------|------------------------------------------------------------|
-| Bug fixing            | "Find and fix the bugs in task_service.py"                 |
-| Writing tests         | "Increase test coverage for TaskService"                   |
+| Bug fixing history    | "Show the git history of the fixed TaskService bugs"       |
+| Writing tests         | "Increase test coverage for new features"                  |
 | Code refactoring      | "Refactor text_processing.py for performance/readability"  |
 | Feature development   | "Add a tagging system to tasks"                            |
 | Data analysis         | "Analyze sales_data.csv and generate a quarterly report"   |

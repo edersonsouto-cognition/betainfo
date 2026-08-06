@@ -1,6 +1,6 @@
 # Task Manager API – Devin Demo Playground
 
-A feature-rich Task Manager project designed for **Devin demo recordings**. It includes intentional bugs, missing test coverage, refactor-worthy code, and sample data — all set up to showcase different Devin capabilities.
+A feature-rich Task Manager project designed for **Devin demo recordings**. It includes refactor-worthy code and sample data — all set up to showcase testing, refactoring, feature development, and DevOps demos.
 
 ## Quick Start
 
@@ -30,13 +30,13 @@ uv run ruff format --check .
 │   │   └── main.py
 │   ├── models/           # Pydantic v2 models
 │   │   └── task.py
-│   ├── services/         # Business logic (with intentional bugs)
+│   ├── services/         # Business logic
 │   │   └── task_service.py
 │   ├── utils/
 │   │   ├── text_processing.py   # Refactor-worthy text helpers
 │   │   └── data_processor.py    # CSV/JSON wrangling with pandas
 │   └── cli.py            # Typer + Rich CLI
-├── tests/                # Pytest suite (with intentional gaps)
+├── tests/                # Pytest suite
 ├── data/
 │   ├── sales_data.csv    # 24 sales records for data analysis demos
 │   └── sample_tasks.json # Seed data the CLI loads on first run
@@ -54,32 +54,23 @@ uv run ruff format --check .
 | Data | Pandas |
 | Testing | Pytest |
 | Linting | Ruff |
-| Package Manager | UV |
+| Package Manager | uv |
 
 ---
 
 ## Demo Scenarios
 
-### 1. Bug Fixing (4 intentional bugs in `src/services/task_service.py`)
+### 1. Bug Fixing History (`src/services/task_service.py`)
 
-| Bug | Method | Symptom |
-|-----|--------|---------|
-| Case-sensitive search | `search_tasks()` | Searching `"report"` doesn't match `"Quarterly Report"` |
-| Missing `updated_at` | `update_task()` | Timestamp never changes after update |
-| Reversed comparison | `get_overdue_tasks()` | Returns future tasks instead of past-due ones |
-| Division by zero | `get_stats()` | Crashes on `ZeroDivisionError` when no tasks exist |
+The four original TaskService bugs (case-sensitive search, missing `updated_at` refresh, reversed overdue comparison, and division-by-zero in `get_stats`) have been fixed and are covered by tests in `tests/test_task_service.py`.
 
-**How to demo:** Ask Devin to "find and fix the bugs in task_service.py" or "write missing tests and fix the failures."
+**How to demo:** Ask Devin to "show the git history of the fixed TaskService bugs" or "refactor task_service.py for clarity."
 
-### 2. Writing Missing Tests
+### 2. Writing Tests
 
-The test suite in `tests/test_task_service.py` intentionally omits:
-- `TestUpdateTask` — would catch the `updated_at` bug
-- `TestSearchTasks` — would catch the case-sensitivity bug
-- `TestGetOverdueTasks` — would catch the date comparison bug
-- `TestGetStats` — would catch the division-by-zero bug
+`tests/test_task_service.py` now covers the TaskService CRUD and query methods (search, overdue detection, and statistics). New features are the best place to extend coverage.
 
-**How to demo:** Ask Devin to "increase test coverage for TaskService."
+**How to demo:** Ask Devin to "increase test coverage for a new feature."
 
 ### 3. Code Refactoring (`src/utils/text_processing.py`)
 
@@ -112,9 +103,11 @@ The sales data has 24 records across Electronics and Furniture categories, 4 reg
 
 ### 6. DevOps & CI
 
-The GitHub Actions workflow (`.github/workflows/ci.yml`) runs:
+The GitHub Actions workflow (`.github/workflows/ci.yml`) runs on pushes and pull requests targeting `main`:
 1. **Lint** — `ruff check .` and `ruff format --check .`
 2. **Test** — `pytest` (depends on lint passing)
+
+`setup-uv` pins uv to `0.11.28` so the CI setup does not depend on a GitHub API "latest" lookup, which can fail due to rate limits.
 
 **How to demo:** Ask Devin to "add code coverage reporting to CI" or "add a Docker deployment step."
 
@@ -148,4 +141,4 @@ uv run python -m src.cli stats
 
 ## Contributing
 
-This is a playground repo — feel free to experiment! The intentional bugs and gaps are there by design for demo purposes.
+This is a playground repo — feel free to experiment! The remaining refactor-worthy code and sample data are there by design for demo purposes.

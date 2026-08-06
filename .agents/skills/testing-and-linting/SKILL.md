@@ -1,6 +1,6 @@
 ---
 name: testing-and-linting
-description: Running pytest, ruff lint/format, CI pipeline details, and a map of intentionally missing tests. Use when running tests, checking code quality, or debugging CI.
+description: Running pytest, ruff lint/format, CI pipeline details, and the current test suite map. Use when running tests, checking code quality, or debugging CI.
 ---
 
 # Skill: Running Tests and Linting
@@ -15,13 +15,13 @@ uv run pytest
 
 - Runs all tests in `tests/` (configured via `[tool.pytest.ini_options]` in `pyproject.toml`).
 - The `-v` flag is applied automatically (set in `addopts`).
-- 47 tests across 5 test files should pass on a clean checkout.
+- 58 tests across 5 test files should pass on a clean checkout.
 
 ### Test Files
 
 | File                          | What it covers                           |
 |-------------------------------|------------------------------------------|
-| `tests/test_task_service.py`  | `TaskService` CRUD operations            |
+| `tests/test_task_service.py`  | `TaskService` CRUD and query operations (search, overdue, stats) |
 | `tests/test_api.py`           | FastAPI endpoint integration tests       |
 | `tests/test_text_processing.py` | Text utility functions                |
 | `tests/test_data_processor.py`  | CSV/JSON data utilities (uses `data/sales_data.csv`) |
@@ -88,15 +88,8 @@ Always run both lint and tests locally before pushing:
 uv run ruff check . && uv run ruff format --check . && uv run pytest
 ```
 
-## Intentionally Missing Tests
+## TaskService Bugs — Fixed and Covered
 
-The test suite **intentionally omits** these test classes in `tests/test_task_service.py` (they are part of the demo workflow):
+The four historical `TaskService` bugs (case-sensitive search, missing `updated_at` refresh, reversed overdue comparison, and division-by-zero in `get_stats`) have been fixed and are now covered by tests in `tests/test_task_service.py`.
 
-| Missing Test Class     | Would catch this bug in `task_service.py`       |
-|------------------------|-------------------------------------------------|
-| `TestUpdateTask`       | `update_task()` does not refresh `updated_at`   |
-| `TestSearchTasks`      | `search_tasks()` is case-sensitive (should not be) |
-| `TestGetOverdueTasks`  | `get_overdue_tasks()` has reversed date comparison |
-| `TestGetStats`         | `get_stats()` raises `ZeroDivisionError` on empty task list |
-
-When asked to improve test coverage, write tests for these classes first. The bugs are marked with `# BUG:` comments in `src/services/task_service.py`.
+When asked to extend test coverage, look for untested surfaces in new features rather than these old gaps.
